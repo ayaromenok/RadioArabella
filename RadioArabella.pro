@@ -1,4 +1,4 @@
-QT += quick
+QT += quick multimedia
 #QT += androidextras
 
 CONFIG += c++11
