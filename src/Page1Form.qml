@@ -1,9 +1,18 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
+import Radio 1.0
 
 Page {
     width: 640
     height: 400
+
+    YRadio{
+        id: radio
+    }
+
+    function fnSwitch(){
+        console.log("onOff:", swRadio.checked)
+    }
 
     header: Label {
         text: qsTr("Main")
@@ -26,14 +35,17 @@ Page {
             y: 71
             stepSize: 1
             to: 100
-            value: 50
+            value: radio.volume
+            onMoved: radio.volume
         }
 
         Switch {
             id: swRadio
             x: 0
             y: 13
-            text: qsTr("Radio ON")
+            text: qsTr("Radio")
+            checked: radio.onOff
+            onCheckedChanged: fnSwitch()
         }
 
         Slider {
@@ -45,7 +57,8 @@ Page {
             stepSize: 1
             to: 100
             orientation: Qt.Vertical
-            value: 50
+            value: radio.volume
+            onMoved: radio.volume
         }
 
         Label {
