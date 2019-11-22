@@ -13,16 +13,23 @@ Page {
     function fnSwitch(){
         console.log("onOff:", swRadio.checked)
         radio.onOff = swRadio.checked
+        if (swRadio.checked){
+            swRadio.text = qsTr("ON")
+        } else {
+            swRadio.text = qsTr("OFF")
+        }
     }
     function fnVolumeDial(){
         console.log("Volume/Dial:", dlVolume.value)
         slVolume.value = dlVolume.value
         radio.volume = dlVolume.value
+        lbVolume.text = qsTr("Volume: ") + dlVolume.value.toFixed()
     }
     function fnVolumeSlider(){
         console.log("Volume/Slider:", slVolume.value)
         dlVolume.value = slVolume.value
         radio.volume = slVolume.value
+        lbVolume.text = qsTr("Volume: ") + slVolume.value.toFixed()
     }
 
     header: Label {
@@ -37,7 +44,7 @@ Page {
         x: 0
         y: 6
         width: 148
-        height: 235
+        height: 300
         title: qsTr("Radio")
 
         Dial {
@@ -54,7 +61,7 @@ Page {
             id: swRadio
             x: 0
             y: 13
-            text: qsTr("Radio")
+            text: qsTr("OFF")
             checked: radio.onOff
             onCheckedChanged: fnSwitch()
         }
@@ -76,7 +83,7 @@ Page {
             id: lbVolume
             x: 23
             y: 188
-            text: qsTr("Volume")
+            text: qsTr("Volume: 40")
         }
     }
 
