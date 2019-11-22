@@ -1,5 +1,5 @@
 QT += quick
-QT += androidextras
+#QT += androidextras
 
 CONFIG += c++11
 
@@ -7,7 +7,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        src/main.cpp
+        src/main.cpp \
+        src/yradio.cpp
 
 RESOURCES += src/qml.qrc
 
@@ -38,3 +39,6 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
     ANDROID_PACKAGE_SOURCE_DIR = \
         $$PWD/android
 }
+
+HEADERS += \
+    src/yradio.h

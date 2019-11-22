@@ -12,6 +12,17 @@ Page {
 
     function fnSwitch(){
         console.log("onOff:", swRadio.checked)
+        radio.onOff = swRadio.checked
+    }
+    function fnVolumeDial(){
+        console.log("Volume/Dial:", dlVolume.value)
+        slVolume.value = dlVolume.value
+        radio.volume = dlVolume.value
+    }
+    function fnVolumeSlider(){
+        console.log("Volume/Slider:", slVolume.value)
+        dlVolume.value = slVolume.value
+        radio.volume = slVolume.value
     }
 
     header: Label {
@@ -36,7 +47,7 @@ Page {
             stepSize: 1
             to: 100
             value: radio.volume
-            onMoved: radio.volume
+            onMoved: fnVolumeDial()
         }
 
         Switch {
@@ -58,7 +69,7 @@ Page {
             to: 100
             orientation: Qt.Vertical
             value: radio.volume
-            onMoved: radio.volume
+            onMoved: fnVolumeSlider()
         }
 
         Label {

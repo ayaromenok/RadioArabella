@@ -1,6 +1,7 @@
 //Copyrigth (C) 2019 Andrey Yaromenok
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include "yradio.h"
 
 int main(int argc, char *argv[])
 {
@@ -8,6 +9,7 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    qmlRegisterType<YRadio>("Radio", 1, 0, "YRadio");
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
