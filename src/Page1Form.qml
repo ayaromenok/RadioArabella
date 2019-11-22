@@ -1,6 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import Radio 1.0
+import QtQml 2.13
 
 Page {
     width: 640
@@ -123,6 +124,16 @@ Page {
         }
     }
 
+
+
+    Timer {
+        id: timer
+        interval: 1000; running: true; repeat: true
+        onTriggered: {
+            lbDate.text = Qt.formatDateTime(new Date, "dddd, d MMM")
+            lbTime.text = Qt.formatDateTime(new Date, "HH:mm")
+        }
+    }
     GroupBox {
         id: gbTimeDate
         x: 146
