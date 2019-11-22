@@ -88,6 +88,28 @@ Page {
         }
     }
 
+    function fnParseWeatherData(weatherData) {
+            console.log("temperature,K",weatherData.main.temp);
+            console.log("pressure",weatherData.main.pressure);
+            lbTemperature.text = (weatherData.main.temp-273).toFixed()+" C";
+            lbWind.text = weatherData.wind.speed+" m/s? or km/h";
+            lbWindDirection.text = weatherData.wind.deg + "North - 0?";
+        }
+    Timer {
+        id: timerWeather
+        interval: 60000; running: true; repeat: true
+        onTriggered: {
+            var xhr = new XMLHttpRequest;
+            xhr.open("GET","https://samples.openweathermap.org/data/2.5/weather?lat=48.0222&lon=16.6268&appid=b6907d289e10d714a6e88b30761fae22");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    var a = JSON.parse(xhr.responseText);
+                    fnParseWeatherData(a);
+                }
+            }
+            xhr.send();
+        }
+    }
     GroupBox {
         id: gbWeather
         x: 492
@@ -98,7 +120,7 @@ Page {
 
         Label {
             id: lbTemperature
-            x: 74
+            x: 10
             y: 33
             text: qsTr("+10C")
             horizontalAlignment: Text.AlignRight
@@ -107,7 +129,7 @@ Page {
 
         Label {
             id: lbWind
-            x: 36
+            x: 10
             y: 81
             text: qsTr("25 km/h")
             horizontalAlignment: Text.AlignRight
@@ -116,7 +138,7 @@ Page {
 
         Label {
             id: lbWindDirection
-            x: 98
+            x: 10
             y: 139
             text: qsTr("S-E")
             font.pointSize: 20
