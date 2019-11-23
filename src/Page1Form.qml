@@ -1,11 +1,11 @@
-import QtQuick 2.13
-import QtQuick.Controls 2.13
+import QtQuick 2.9
+import QtQuick.Controls 2.9
 import Radio 1.0
-import QtQml 2.13
+import QtQml 2.9
 
 Page {
-    width: 640
-    height: 400
+    width: 800
+    height: 480
 
     YRadio{
         id: radio
@@ -15,64 +15,90 @@ Page {
         console.log("onOff:", swRadio.checked)
         radio.onOff = swRadio.checked
         if (swRadio.checked){
-            swRadio.text = qsTr("ON")
+            swRadio.text = qsTr("Radio ON")
         } else {
-            swRadio.text = qsTr("OFF")
+            swRadio.text = qsTr("Radio OFF")
         }
     }
-    function fnVolumeDial(){
-        console.log("Volume/Dial:", dlVolume.value)
-        slVolume.value = dlVolume.value
-        radio.volume = dlVolume.value
-        lbVolume.text = qsTr("Volume: ") + dlVolume.value.toFixed()
+
+    function fnDisplayOn(){
+         console.log("display:", swDisplay.checked)
+        radio.displayOn = swDisplay.checked
+        if (swDisplay.checked){
+            swDisplay.text = qsTr("Display ON")
+        } else {
+            swDisplay.text = qsTr("Display OFF")
+        }
     }
+
     function fnVolumeSlider(){
         console.log("Volume/Slider:", slVolume.value)
-        dlVolume.value = slVolume.value
         radio.volume = slVolume.value
         lbVolume.text = qsTr("Volume: ") + slVolume.value.toFixed()
     }
 
-    header: Label {
-        text: qsTr("Main")
-        horizontalAlignment: Text.AlignHCenter
-        font.pixelSize: Qt.application.font.pixelSize * 2
-        padding: 10
+    Timer {
+        id: timerRadio
+        interval: 60000; running: true; repeat: true
+        onTriggered: {
+            console.log("get current played list, need to use once in 1 min")
+            var xhr2 = new XMLHttpRequest;
+            xhr2.open("GET","https://www.arabella.at/songfinder/");
+            xhr2.send();
+            xhr2.onreadystatechange = function() {
+                if (xhr2.readyState == 4 && xhr2.status == 200) {
+                    console.log( "get answer of bytes:", xhr2.response.length);
+                    //around 70kb - need to parse in C++
+                    //console.log("html", xhr2.responseText);
+                    /* //example to parse, path in mozilla: view-source:https://www.arabella.at/songfinder/
+                    <table class="table-playlist">
+                            <tbody><tr>
+                                 <td class="when"> <div>
+                                                <span class="when-date">23.11.</span>
+                                                <span class="when-time">12:37</span>
+                                            </div>   </td>
+                                        <td class="title"> <div>
+                                                <h4 class="title-song">Got My Mind Set On You</h4>
+                                                <h5 class="title-performer">George Harrison</h5>
+                                            </div>   </td>
+                */
+                }
+            }
+        }
     }
+//    header: Label {
+//        text: qsTr("Main")
+//        horizontalAlignment: Text.AlignHCenter
+//        font.pixelSize: Qt.application.font.pixelSize * 2
+//        padding: 10
+//    }
 
     GroupBox {
         id: gbRadio
-        x: 0
+        x: 2
         y: 6
         width: 148
-        height: 300
+        height: 400
         title: qsTr("Radio")
 
-        Dial {
-            id: dlVolume
-            x: -12
-            y: 71
-            stepSize: 1
-            to: 100
-            value: radio.volume
-            onMoved: fnVolumeDial()
-        }
 
         Switch {
             id: swRadio
-            x: 0
-            y: 13
-            text: qsTr("OFF")
+            x: -10
+            y: 320
+            text: qsTr("Radio")
+
             checked: radio.onOff
             onCheckedChanged: fnSwitch()
         }
 
+
         Slider {
             id: slVolume
-            x: 84
-            y: 71
-            width: 36
-            height: 100
+            x: 54
+            y: 10
+            width: 10
+            height: 290
             stepSize: 1
             to: 100
             orientation: Qt.Vertical
@@ -82,27 +108,55 @@ Page {
 
         Label {
             id: lbVolume
-            x: 23
-            y: 188
+            x: 10
+            y: 300
+            //font.pixelSize: Qt.application.font.pixelSize * 1.4
             text: qsTr("Volume: 40")
         }
     }
 
     function fnParseWeatherData(weatherData) {
-            console.log("temperature,K",weatherData.main.temp);
-            console.log("pressure",weatherData.main.pressure);
-            lbTemperature.text = (weatherData.main.temp-273).toFixed()+" C";
-            lbWind.text = weatherData.wind.speed+" m/s? or km/h";
-            lbWindDirection.text = weatherData.wind.deg + "North - 0?";
+            var tempCur = weatherData.main.temp-273.15;         //K > C
+            var windSpeed = weatherData.wind.speed*3.6;         //m/s > km/h
+            var windDir = weatherData.wind.deg;                 //degree, CW
+            var pressure = weatherData.main.pressure;           //kPa
+            var humidity  = weatherData.main.humidity;          //%
+            var tempMin = weatherData.main.temp_min-273.15;         //K > C
+            var tempMax = weatherData.main.temp_max-273.15;         //K > C
+
+            lbTemperature.text = ((tempCur>0)?"+":"-")+(tempCur).toFixed()+" C";
+            lbWind.text = (windSpeed).toFixed() + " km/h";
+            lbPressure.text = pressure + " hPa";
+            lbHumidity.text = humidity + " %";
+            lbTempMinMax.text = ((tempMin>0)?"+":"-") + (tempMin).toFixed()+"C : "
+                    ((tempMax>0)?"+":"-")+(tempMax).toFixed()+"C";
+
+
+            var windDirStr = "";
+
+            if ((windDir > 22.5) & (windDir <= 67.5 )) { windDirStr = "N-E"}
+            else if ((windDir > 67.5) & (windDir <= 112.5 )) { windDirStr = "East"}
+            else if ((windDir > 112.5) & (windDir <= 157.5 )) { windDirStr = "S-E"}
+            else if ((windDir > 157.5) & (windDir <= 202.5 )) { windDirStr = "South"}
+            else if ((windDir > 202.5) & (windDir <= 247.5 )) { windDirStr = "S-W"}
+            else if ((windDir > 247.5) & (windDir <= 292.5 )) { windDirStr = "West"}
+            else if ((windDir > 292.5) & (windDir <= 337.5 )) { windDirStr = "N-W"}
+            else { windDirStr = "North"}
+            //lbWindDir.text = windDir + " CW";
+            lbWindDir.text = windDirStr;
         }
     Timer {
         id: timerWeather
-        interval: 60000; running: true; repeat: true
+        interval: 30000;
+        running: true;
+        repeat: false;
         onTriggered: {
             var xhr = new XMLHttpRequest;
-            xhr.open("GET","https://samples.openweathermap.org/data/2.5/weather?lat=48.0222&lon=16.6268&appid=b6907d289e10d714a6e88b30761fae22");
+            xhr.open("GET","http://api.openweathermap.org/data/2.5/weather?lat=48.0210313&lon=16.6271575&appid=9400dfc46cf876a19331e8f0c96d65f7");
             xhr.onreadystatechange = function() {
+                console.log( "get answer of bytes:", xhr.response.length);
                 if (xhr.readyState == XMLHttpRequest.DONE) {
+                    console.log( "get answer of bytes:", xhr.response.length);
                     var a = JSON.parse(xhr.responseText);
                     fnParseWeatherData(a);
                 }
@@ -112,37 +166,74 @@ Page {
     }
     GroupBox {
         id: gbWeather
-        x: 492
+        x: 630
         y: 6
         width: 148
-        height: 235
+        height: 400
         title: qsTr("Weather")
 
         Label {
             id: lbTemperature
             x: 10
-            y: 33
+            y: 30
             text: qsTr("+10C")
             horizontalAlignment: Text.AlignRight
-            font.pointSize: 20
+            font.pixelSize: Qt.application.font.pixelSize * 2
+            //font.pointSize: 20
+        }
+
+        Label {
+            id: lbWindDir
+            x: 10
+            y: 80
+            text: qsTr("S-E")
+            font.pixelSize: Qt.application.font.pixelSize * 2
+            horizontalAlignment: Text.AlignRight
         }
 
         Label {
             id: lbWind
             x: 10
-            y: 81
+            y: 130
             text: qsTr("25 km/h")
             horizontalAlignment: Text.AlignRight
-            font.pointSize: 20
+            font.pixelSize: Qt.application.font.pixelSize * 1.5
         }
 
         Label {
-            id: lbWindDirection
-            x: 10
-            y: 139
-            text: qsTr("S-E")
-            font.pointSize: 20
+            id: lbPressure
+            x: 0
+            y: 180
+            text: qsTr("1000 hPa")
+            font.pixelSize: Qt.application.font.pixelSize * 1.5
             horizontalAlignment: Text.AlignRight
+        }
+
+        Label {
+            id: lbHumidity
+            x: 10
+            y: 230
+            text: qsTr("75 %")
+            font.pixelSize: Qt.application.font.pixelSize * 1.5
+            horizontalAlignment: Text.AlignRight
+        }
+
+        Label {
+            id: lbTempMinMax
+            x: 0
+            y: 280
+            text: qsTr("-10C - +10C")
+            font.pixelSize: Qt.application.font.pixelSize * 1.2
+            horizontalAlignment: Text.AlignRight
+        }
+
+        Switch {
+            id: swDisplay
+            x: -10
+            y: 320
+            text: qsTr("Display OFF")
+            checked: radio.displayOn
+            onCheckedChanged: fnDisplayOn()
         }
     }
 
@@ -160,30 +251,31 @@ Page {
         id: gbTimeDate
         x: 146
         y: 6
-        width: 347
-        height: 235
+        width: 488
+        height: 400
         title: qsTr("Time/Date")
 
         Label {
             id: lbDate
-            x: 143
-            y: 20
-            width: 41
+            x: 243
+            y: 30
+            width: 1
             height: 0
             text: qsTr("Friday, Nov 22")
-            font.pointSize: 30
+            font.pixelSize: Qt.application.font.pixelSize * 3
             horizontalAlignment: Text.AlignHCenter
         }
 
         Label {
             id: lbTime
-            x: 62
-            y: 48
-            width: 200
+            x: 242
+            y: 120
+            width: 1
             height: 156
             text: qsTr("00:00")
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: 100
+            //font.pointSize: 100
+            font.pixelSize: Qt.application.font.pixelSize * 6
         }
     }
 }
