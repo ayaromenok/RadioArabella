@@ -120,29 +120,39 @@ Page {
             var windSpeed = weatherData.wind.speed*3.6;         //m/s > km/h
             var windDir = weatherData.wind.deg;                 //degree, CW
             var pressure = weatherData.main.pressure;           //kPa
+            var humidity  = weatherData.main.humidity;          //%
+            var tempMin = weatherData.main.temp_min-273.15;         //K > C
+            var tempMax = weatherData.main.temp_max-273.15;         //K > C
 
-            if (tempCur > 0) {
-                lbTemperature.text = "+"+(tempCur).toFixed()+" C";
-            } else {
-                lbTemperature.text = "-"+(tempCur).toFixed()+" C";
-            }
+            lbTemperature.text = ((tempCur>0)?"+":"-")+(tempCur).toFixed()+" C";
             lbWind.text = (windSpeed).toFixed() + " km/h";
-
             lbPressure.text = pressure + " hPa";
+            lbHumidity.text = humidity + " %";
+            lbTempMinMax.text = ((tempMin>0)?"+":"-") + (tempMin).toFixed()+"C : "
+                    ((tempMax>0)?"+":"-")+(tempMax).toFixed()+"C";
+
 
             var windDirStr = "";
 
-
-            lbWindDir.text = windDir + " CW";
+            if ((windDir > 22.5) & (windDir <= 67.5 )) { windDirStr = "N-E"}
+            else if ((windDir > 67.5) & (windDir <= 112.5 )) { windDirStr = "East"}
+            else if ((windDir > 112.5) & (windDir <= 157.5 )) { windDirStr = "S-E"}
+            else if ((windDir > 157.5) & (windDir <= 202.5 )) { windDirStr = "South"}
+            else if ((windDir > 202.5) & (windDir <= 247.5 )) { windDirStr = "S-W"}
+            else if ((windDir > 247.5) & (windDir <= 292.5 )) { windDirStr = "West"}
+            else if ((windDir > 292.5) & (windDir <= 337.5 )) { windDirStr = "N-W"}
+            else { windDirStr = "North"}
+            //lbWindDir.text = windDir + " CW";
+            lbWindDir.text = windDirStr;
         }
     Timer {
         id: timerWeather
-        interval: 1000;
+        interval: 30000;
         running: true;
         repeat: false;
         onTriggered: {
             var xhr = new XMLHttpRequest;
-            xhr.open("GET","http://api.openweathermap.org/data/2.5/weather?lat=48.2084&lon=16.3725&appid=9400dfc46cf876a19331e8f0c96d65f7");
+            xhr.open("GET","http://api.openweathermap.org/data/2.5/weather?lat=48.0210313&lon=16.6271575&appid=9400dfc46cf876a19331e8f0c96d65f7");
             xhr.onreadystatechange = function() {
                 console.log( "get answer of bytes:", xhr.response.length);
                 if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -168,33 +178,52 @@ Page {
             y: 30
             text: qsTr("+10C")
             horizontalAlignment: Text.AlignRight
-            font.pointSize: 20
-        }
-
-        Label {
-            id: lbWind
-            x: 10
-            y: 80
-            text: qsTr("25 km/h")
-            horizontalAlignment: Text.AlignRight
-            font.pointSize: 20
+            font.pixelSize: Qt.application.font.pixelSize * 2
+            //font.pointSize: 20
         }
 
         Label {
             id: lbWindDir
             x: 10
-            y: 130
+            y: 80
             text: qsTr("S-E")
-            font.pointSize: 20
+            font.pixelSize: Qt.application.font.pixelSize * 2
             horizontalAlignment: Text.AlignRight
         }
 
         Label {
-            id: lbPressure
+            id: lbWind
             x: 10
+            y: 130
+            text: qsTr("25 km/h")
+            horizontalAlignment: Text.AlignRight
+            font.pixelSize: Qt.application.font.pixelSize * 1.5
+        }
+
+        Label {
+            id: lbPressure
+            x: 0
             y: 180
             text: qsTr("1000 hPa")
-            font.pointSize: 20
+            font.pixelSize: Qt.application.font.pixelSize * 1.5
+            horizontalAlignment: Text.AlignRight
+        }
+
+        Label {
+            id: lbHumidity
+            x: 10
+            y: 230
+            text: qsTr("75 %")
+            font.pixelSize: Qt.application.font.pixelSize * 1.5
+            horizontalAlignment: Text.AlignRight
+        }
+
+        Label {
+            id: lbTempMinMax
+            x: 0
+            y: 280
+            text: qsTr("-10C - +10C")
+            font.pixelSize: Qt.application.font.pixelSize * 1.2
             horizontalAlignment: Text.AlignRight
         }
 
