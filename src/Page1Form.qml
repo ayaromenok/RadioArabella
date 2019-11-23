@@ -33,6 +33,23 @@ Page {
         lbVolume.text = qsTr("Volume: ") + slVolume.value.toFixed()
     }
 
+    Timer {
+        id: timerRadio
+        interval: 60000; running: true; repeat: true
+        onTriggered: {
+            console.log("get current played list, need to use once in 1 min")
+            var xhr2 = new XMLHttpRequest;
+            xhr2.open("GET","https://www.arabella.at/songfinder/");
+            xhr2.send();
+            xhr2.onreadystatechange = function() {
+                if (xhr2.readyState == 4 && xhr2.status == 200) {
+                    console.log( "get answer of bytes:", xhr2.response.length);
+                    //around 70kb - need to parse in C++
+                    //console.log("html", xhr2.responseText);
+                }
+            }
+        }
+    }
     header: Label {
         text: qsTr("Main")
         horizontalAlignment: Text.AlignHCenter
