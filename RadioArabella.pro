@@ -1,5 +1,5 @@
 QT += quick multimedia
-#QT += androidextras
+
 
 CONFIG += c++11
 
@@ -14,6 +14,22 @@ RESOURCES += src/qml.qrc
 
 TRANSLATIONS += \
     src/RadioArabella_en_US.ts
+
+android {
+    QT += androidextras
+    DEFINES += "ANDROID=1"
+}
+
+linux:!android{
+    #for dev system
+}
+
+contains(ANDROID_TARGET_ARCH, armeabi-v7a){
+    #android arm32
+}
+contains(ANDROID_TARGET_ARCH, arm64-v8a){
+    #android arm64
+}
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
