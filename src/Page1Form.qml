@@ -116,24 +116,40 @@ Page {
     }
 
     function fnParseWeatherData(weatherData) {
-            console.log("temperature,K",weatherData.main.temp);
-            console.log("pressure",weatherData.main.pressure);
-            lbTemperature.text = (weatherData.main.temp-273).toFixed()+" C";
-            lbWind.text = weatherData.wind.speed+" m/s? or km/h";
-            lbWindDirection.text = weatherData.wind.deg + "North - 0?";
+            var tempCur = weatherData.main.temp-273.15;         //K > C
+            var windSpeed = weatherData.wind.speed*3.6;         //m/s > km/h
+            var windDir = weatherData.wind.deg;                 //degree, CW
+            var pressure = weatherData.main.pressure;           //kPa
+
+            if (tempCur > 0) {
+                lbTemperature.text = "+"+(tempCur).toFixed()+" C";
+            } else {
+                lbTemperature.text = "-"+(tempCur).toFixed()+" C";
+            }
+            lbWind.text = (windSpeed).toFixed() + " km/h";
+
+            lbPressure.text = pressure + " hPa";
+
+            var windDirStr = "";
+
+
+            lbWindDir.text = windDir + " CW";
         }
     Timer {
         id: timerWeather
-        interval: 60000; running: true; repeat: true
+        interval: 1000;
+        running: true;
+        repeat: false;
         onTriggered: {
             var xhr = new XMLHttpRequest;
-            xhr.open("GET","https://samples.openweathermap.org/data/2.5/weather?lat=48.0222&lon=16.6268&appid=b6907d289e10d714a6e88b30761fae22");
+            xhr.open("GET","http://api.openweathermap.org/data/2.5/weather?lat=48.2084&lon=16.3725&appid=9400dfc46cf876a19331e8f0c96d65f7");
             xhr.onreadystatechange = function() {
                 console.log( "get answer of bytes:", xhr.response.length);
-//                if (xhr.readyState == XMLHttpRequest.DONE) {
-//                    var a = JSON.parse(xhr.responseText);
-//                    fnParseWeatherData(a);
-//                }
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    console.log( "get answer of bytes:", xhr.response.length);
+                    var a = JSON.parse(xhr.responseText);
+                    fnParseWeatherData(a);
+                }
             }
             xhr.send();
         }
@@ -149,7 +165,7 @@ Page {
         Label {
             id: lbTemperature
             x: 10
-            y: 33
+            y: 30
             text: qsTr("+10C")
             horizontalAlignment: Text.AlignRight
             font.pointSize: 20
@@ -158,20 +174,30 @@ Page {
         Label {
             id: lbWind
             x: 10
-            y: 81
+            y: 80
             text: qsTr("25 km/h")
             horizontalAlignment: Text.AlignRight
             font.pointSize: 20
         }
 
         Label {
-            id: lbWindDirection
+            id: lbWindDir
             x: 10
-            y: 139
+            y: 130
             text: qsTr("S-E")
             font.pointSize: 20
             horizontalAlignment: Text.AlignRight
         }
+
+        Label {
+            id: lbPressure
+            x: 10
+            y: 180
+            text: qsTr("1000 hPa")
+            font.pointSize: 20
+            horizontalAlignment: Text.AlignRight
+        }
+
         Switch {
             id: swDisplay
             x: -10
