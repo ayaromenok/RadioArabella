@@ -1,7 +1,7 @@
-import QtQuick 2.13
-import QtQuick.Controls 2.13
+import QtQuick 2.9
+import QtQuick.Controls 2.9
 import Radio 1.0
-import QtQml 2.13
+import QtQml 2.9
 
 Page {
     width: 640
