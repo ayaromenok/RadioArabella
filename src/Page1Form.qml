@@ -20,12 +20,17 @@ Page {
             swRadio.text = qsTr("OFF")
         }
     }
-    function fnVolumeDial(){
-        console.log("Volume/Dial:", dlVolume.value)
-        slVolume.value = dlVolume.value
-        radio.volume = dlVolume.value
-        lbVolume.text = qsTr("Volume: ") + dlVolume.value.toFixed()
+
+    function fnDisplayOn(){
+         console.log("display:", swDisplay.checked)
+        radio.displayOn = swDisplay.checked
+        if (swDisplay.checked){
+            swDisplay.text = qsTr("Display ON")
+        } else {
+            swDisplay.text = qsTr("Display OFF")
+        }
     }
+
     function fnVolumeSlider(){
         console.log("Volume/Slider:", slVolume.value)
         dlVolume.value = slVolume.value
@@ -77,15 +82,6 @@ Page {
         height: 300
         title: qsTr("Radio")
 
-        Dial {
-            id: dlVolume
-            x: -12
-            y: 71
-            stepSize: 1
-            to: 100
-            value: radio.volume
-            onMoved: fnVolumeDial()
-        }
 
         Switch {
             id: swRadio
@@ -95,6 +91,15 @@ Page {
             checked: radio.onOff
             onCheckedChanged: fnSwitch()
         }
+        Switch {
+            id: swDisplay
+            x: 0
+            y: 36
+            text: qsTr("Display OFF")
+            checked: radio.displayOn
+            onCheckedChanged: fnDisplayOn()
+        }
+
 
         Slider {
             id: slVolume

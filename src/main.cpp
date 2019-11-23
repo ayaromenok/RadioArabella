@@ -18,9 +18,6 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     engine.load(url);
-#if ANDROID
-    qInfo() << "build for Android";
-#endif//android
 
     return app.exec();
 }
