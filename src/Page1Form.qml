@@ -46,6 +46,18 @@ Page {
                     console.log( "get answer of bytes:", xhr2.response.length);
                     //around 70kb - need to parse in C++
                     //console.log("html", xhr2.responseText);
+                    /* //example to parse, path in mozilla: view-source:https://www.arabella.at/songfinder/
+                    <table class="table-playlist">
+                            <tbody><tr>
+                                 <td class="when"> <div>
+                                                <span class="when-date">23.11.</span>
+                                                <span class="when-time">12:37</span>
+                                            </div>   </td>
+                                        <td class="title"> <div>
+                                                <h4 class="title-song">Got My Mind Set On You</h4>
+                                                <h5 class="title-performer">George Harrison</h5>
+                                            </div>   </td>
+                  */
                 }
             }
         }
