@@ -3,7 +3,7 @@ import QtQuick.Controls 2.9
 
 ApplicationWindow {
     visible: true
-    width: 640
+    width: 780
     height: 480
     title: qsTr("Radio Arabella")
 
@@ -24,10 +24,10 @@ ApplicationWindow {
         currentIndex: swipeView.currentIndex
 
         TabButton {
-            text: qsTr("Page 1")
+            text: qsTr("Summary")
         }
         TabButton {
-            text: qsTr("Page 2")
+            text: qsTr("Weather")
         }
     }
 }

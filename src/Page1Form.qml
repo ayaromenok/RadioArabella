@@ -4,8 +4,8 @@ import Radio 1.0
 import QtQml 2.9
 
 Page {
-    width: 640
-    height: 400
+    width: 800
+    height: 480
 
     YRadio{
         id: radio
@@ -15,9 +15,9 @@ Page {
         console.log("onOff:", swRadio.checked)
         radio.onOff = swRadio.checked
         if (swRadio.checked){
-            swRadio.text = qsTr("ON")
+            swRadio.text = qsTr("Radio ON")
         } else {
-            swRadio.text = qsTr("OFF")
+            swRadio.text = qsTr("Radio OFF")
         }
     }
 
@@ -33,7 +33,6 @@ Page {
 
     function fnVolumeSlider(){
         console.log("Volume/Slider:", slVolume.value)
-        dlVolume.value = slVolume.value
         radio.volume = slVolume.value
         lbVolume.text = qsTr("Volume: ") + slVolume.value.toFixed()
     }
@@ -62,51 +61,44 @@ Page {
                                                 <h4 class="title-song">Got My Mind Set On You</h4>
                                                 <h5 class="title-performer">George Harrison</h5>
                                             </div>   </td>
-                  */
+                */
                 }
             }
         }
     }
-    header: Label {
-        text: qsTr("Main")
-        horizontalAlignment: Text.AlignHCenter
-        font.pixelSize: Qt.application.font.pixelSize * 2
-        padding: 10
-    }
+//    header: Label {
+//        text: qsTr("Main")
+//        horizontalAlignment: Text.AlignHCenter
+//        font.pixelSize: Qt.application.font.pixelSize * 2
+//        padding: 10
+//    }
 
     GroupBox {
         id: gbRadio
-        x: 0
+        x: 2
         y: 6
         width: 148
-        height: 300
+        height: 400
         title: qsTr("Radio")
 
 
         Switch {
             id: swRadio
-            x: 0
-            y: 13
-            text: qsTr("OFF")
+            x: -10
+            y: 320
+            text: qsTr("Radio")
+
             checked: radio.onOff
             onCheckedChanged: fnSwitch()
-        }
-        Switch {
-            id: swDisplay
-            x: 0
-            y: 36
-            text: qsTr("Display OFF")
-            checked: radio.displayOn
-            onCheckedChanged: fnDisplayOn()
         }
 
 
         Slider {
             id: slVolume
-            x: 84
-            y: 71
-            width: 36
-            height: 100
+            x: 54
+            y: 10
+            width: 10
+            height: 290
             stepSize: 1
             to: 100
             orientation: Qt.Vertical
@@ -116,8 +108,9 @@ Page {
 
         Label {
             id: lbVolume
-            x: 23
-            y: 188
+            x: 10
+            y: 300
+            //font.pixelSize: Qt.application.font.pixelSize * 1.4
             text: qsTr("Volume: 40")
         }
     }
@@ -136,20 +129,21 @@ Page {
             var xhr = new XMLHttpRequest;
             xhr.open("GET","https://samples.openweathermap.org/data/2.5/weather?lat=48.0222&lon=16.6268&appid=b6907d289e10d714a6e88b30761fae22");
             xhr.onreadystatechange = function() {
-                if (xhr.readyState == XMLHttpRequest.DONE) {
-                    var a = JSON.parse(xhr.responseText);
-                    fnParseWeatherData(a);
-                }
+                console.log( "get answer of bytes:", xhr.response.length);
+//                if (xhr.readyState == XMLHttpRequest.DONE) {
+//                    var a = JSON.parse(xhr.responseText);
+//                    fnParseWeatherData(a);
+//                }
             }
             xhr.send();
         }
     }
     GroupBox {
         id: gbWeather
-        x: 492
+        x: 630
         y: 6
         width: 148
-        height: 235
+        height: 400
         title: qsTr("Weather")
 
         Label {
@@ -178,6 +172,14 @@ Page {
             font.pointSize: 20
             horizontalAlignment: Text.AlignRight
         }
+        Switch {
+            id: swDisplay
+            x: -10
+            y: 320
+            text: qsTr("Display OFF")
+            checked: radio.displayOn
+            onCheckedChanged: fnDisplayOn()
+        }
     }
 
 
@@ -194,30 +196,31 @@ Page {
         id: gbTimeDate
         x: 146
         y: 6
-        width: 347
-        height: 235
+        width: 488
+        height: 400
         title: qsTr("Time/Date")
 
         Label {
             id: lbDate
-            x: 143
-            y: 20
-            width: 41
+            x: 243
+            y: 30
+            width: 1
             height: 0
             text: qsTr("Friday, Nov 22")
-            font.pointSize: 30
+            font.pixelSize: Qt.application.font.pixelSize * 3
             horizontalAlignment: Text.AlignHCenter
         }
 
         Label {
             id: lbTime
-            x: 62
-            y: 48
-            width: 200
+            x: 242
+            y: 120
+            width: 1
             height: 156
             text: qsTr("00:00")
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: 100
+            //font.pointSize: 100
+            font.pixelSize: Qt.application.font.pixelSize * 6
         }
     }
 }
