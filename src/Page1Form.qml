@@ -129,7 +129,7 @@ Page {
             lbPressure.text = pressure + " hPa";
             lbHumidity.text = humidity + " %";
             lbTempMinMax.text = ((tempMin>0)?"+":"-") + (tempMin).toFixed()+"C : "
-                    ((tempMax>0)?"+":"-")+(tempMax).toFixed()+"C";
+                    + ((tempMax>0)?"+":"-")+(tempMax).toFixed()+"C";
 
 
             var windDirStr = "";
@@ -147,7 +147,7 @@ Page {
         }
     Timer {
         id: timerWeather
-        interval: 30000;
+        interval: 10000;
         running: true;
         repeat: false;
         onTriggered: {
