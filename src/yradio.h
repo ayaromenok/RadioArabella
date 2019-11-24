@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QDebug>
 class QMediaPlayer;
+class QSettings;
 
 class YRadio : public QObject
 {
@@ -36,6 +37,7 @@ private:
     int             _volume;
     bool            _displayOn;
     QMediaPlayer    *_player;
+    QSettings       *_settings;
 };
 
 #endif // YRADIO_H
