@@ -111,7 +111,7 @@ Page {
             x: 10
             y: 300
             //font.pixelSize: Qt.application.font.pixelSize * 1.4
-            text: qsTr("Volume: 40")
+            text: qsTr("Volume: "+slVolume.value.toFixed())
         }
     }
 
