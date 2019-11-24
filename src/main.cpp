@@ -6,6 +6,9 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setOrganizationName("Andrey Yaromenok");
+    QCoreApplication::setOrganizationDomain("yaromenok.info");
+    QCoreApplication::setApplicationName("RadioArabella");
 
     QGuiApplication app(argc, argv);
 

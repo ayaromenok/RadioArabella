@@ -1,16 +1,18 @@
 //Copyrigth (C) 2019 Andrey Yaromenok
 #include "yradio.h"
 #include <QMediaPlayer>
+#include <QSettings>
 
 #if ANDROID
     #include <QtAndroidExtras>
 #endif //ANDROID
 YRadio::YRadio(QObject *parent) : QObject(parent)
 {
-    //need to save to settings later
-    _volume = 40;
-    _onOff = false;
-    _displayOn = false;
+    _settings = new QSettings();
+    _volume = _settings->value("radio/volume", 40).toInt();
+    qInfo() << "volume" << _volume;
+    _onOff = _settings->value("radio/play", true).toBool();
+    _displayOn = _settings->value("system/displayAlwaysOn", true).toBool();
     _player = new QMediaPlayer(this);
     _player->setVolume(_volume);
     _player->setMedia(QUrl("https://arabellawien.stream.arabella.at/arabellavie"));
@@ -20,6 +22,8 @@ YRadio::~YRadio()
 {
     _player->stop();
     delete _player;
+    //_settings->sync();
+    delete _settings;
 }
 
 void
@@ -32,16 +36,18 @@ YRadio::setOnOff(bool value)
     } else {
         _player->pause();
     }
+    _settings->setValue("radio/play", value);
 }
 
 void
 YRadio::setVolume(int value)
 {
     qDebug() << "qt: volume" << value;
-    if (_volume != value){
+    //if (_volume != value){
         _volume = value;
         _player->setVolume(_volume);
-    }
+    //}
+    _settings->setValue("radio/volume", value);
 }
 
 void
@@ -51,6 +57,7 @@ YRadio::setDisplayOn(bool value)
     if (_displayOn != value){
         _displayOn = value;
     }
+    _settings->setValue("system/displayAlwaysOn", value);
 #if ANDROID
     qInfo() << "build for Android";
     QAndroidJniObject activity = QtAndroid::androidActivity();
