@@ -144,14 +144,17 @@ Page {
             else { windDirStr = "North"}
             //lbWindDir.text = windDir + " CW";
             lbWindDir.text = windDirStr;
+
+            lbWeatherUpd.text = "upd: " + Qt.formatDateTime(new Date, "d MMM, HH:mm:ss");
         }
     Timer {
         id: timerWeather
-        interval: 10000;
+        interval: 100;
         running: true;
-        repeat: false;
+        repeat: true;
         onTriggered: {
             var xhr = new XMLHttpRequest;
+            timerWeather.interval = 600000;
             xhr.open("GET","http://api.openweathermap.org/data/2.5/weather?lat=48.0210313&lon=16.6271575&appid=9400dfc46cf876a19331e8f0c96d65f7");
             xhr.onreadystatechange = function() {
                 console.log( "get answer of bytes:", xhr.response.length);
@@ -221,9 +224,17 @@ Page {
         Label {
             id: lbTempMinMax
             x: 0
-            y: 280
+            y: 270
             text: qsTr("-10C - +10C")
             font.pixelSize: Qt.application.font.pixelSize * 1.2
+            horizontalAlignment: Text.AlignRight
+        }
+        Label {
+            id: lbWeatherUpd
+            x: 0
+            y: 300
+            text: qsTr("upd:")
+            font.pixelSize: Qt.application.font.pixelSize * 0.70
             horizontalAlignment: Text.AlignRight
         }
 
