@@ -273,7 +273,8 @@ Page {
             width: 1
             height: 0
             text: qsTr("Friday, Nov 22")
-            font.pixelSize: Qt.application.font.pixelSize * 3
+            font.bold: true
+            font.pixelSize: Qt.application.font.pixelSize * 2.5
             horizontalAlignment: Text.AlignHCenter
         }
 
@@ -284,9 +285,9 @@ Page {
             width: 1
             height: 156
             text: qsTr("00:00")
+            font.bold: true
+            font.pixelSize: Qt.application.font.pixelSize * 7
             horizontalAlignment: Text.AlignHCenter
-            //font.pointSize: 100
-            font.pixelSize: Qt.application.font.pixelSize * 6
         }
     }
 }
