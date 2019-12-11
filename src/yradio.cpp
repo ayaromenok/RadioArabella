@@ -15,7 +15,7 @@ YRadio::YRadio(QObject *parent) : QObject(parent)
     _displayOn = _settings->value("system/displayAlwaysOn", true).toBool();
     _player = new QMediaPlayer(this);
     _player->setVolume(_volume);
-    _player->setMedia(QUrl("https://arabellawien.stream.arabella.at/arabellavie"));
+
 }
 
 YRadio::~YRadio()
@@ -32,9 +32,11 @@ YRadio::setOnOff(bool value)
     qDebug() << "qt: On|Off" << value;
     _onOff = value;
     if (value) {
+        _player->setMedia(QUrl("https://arabellawien.stream.arabella.at/arabellavie"));
         _player->play();
     } else {
-        _player->pause();
+        //_player->pause();
+        _player->stop();
     }
     _settings->setValue("radio/play", value);
 }
